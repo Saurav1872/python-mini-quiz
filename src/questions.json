@@ -391,6 +391,22 @@
         "5016": {
             "Q": "The Delhi sultanate reached its maximum geographical limits during the reign of Muhammad Bin Tughlaq.",
             "A": true
+        },
+        "5017": {
+            "Q": "Tripitakas are sacred books of Hindus.",
+            "A": false
+        },
+        "5018": {
+            "Q": "The treaty of Mangalore was signed b/w the east india company and Haidar Ali.",
+            "A": false
+        },
+        "5019": {
+            "Q": "To conquer and annex Peshawar and Punjab, Mahumud of Ghazni defeated Arabs.",
+            "A": false
+        },
+        "5020": {
+            "Q": "Two of the great Mughals wrote their own memories they were Babar and Jahangir.",
+            "A": true
         }
     }
 }
