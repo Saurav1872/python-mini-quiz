@@ -1,98 +1,5 @@
 import random
-
-questions = {
-    "category1": {
-        "1001": {
-            "Q": "The atmoic number of sodium is 20.",
-            "A": False
-        },
-        "1002": {
-            "Q": "The black box in a plane is black.",
-            "A": False
-        },
-        "1003": {
-            "Q": "In a deck of cards, the king has a mustache.",
-            "A": False
-        },
-        "1004": {
-            "Q": "Hippos sweat a red substance.",
-            "A": True
-        },
-        "1005": {
-            "Q": "The black box in a plane is black.",
-            "A": False
-        },
-        "1006": {
-            "Q": "In a deck of cards, the king has a mustache.",
-            "A": False
-        },
-        "1007": {
-            "Q": "Hippos sweat a red substance.",
-            "A": True
-        }
-    },
-    "category2": {
-        "1001": {
-            "Q": "The atmoic number of sodium is 20.",
-            "A": False
-        },
-        "1002": {
-            "Q": "The black box in a plane is black.",
-            "A": False
-        },
-        "1003": {
-            "Q": "In a deck of cards, the king has a mustache.",
-            "A": False
-        },
-        "1004": {
-            "Q": "Hippos sweat a red substance.",
-            "A": True
-        },
-        "1005": {
-            "Q": "The black box in a plane is black.",
-            "A": False
-        },
-        "1006": {
-            "Q": "In a deck of cards, the king has a mustache.",
-            "A": False
-        },
-        "1007": {
-            "Q": "Hippos sweat a red substance.",
-            "A": True
-        }
-    },
-    "category3": {
-        "1001": {
-            "Q": "The atmoic number of sodium is 20.",
-            "A": False
-        },
-        "1002": {
-            "Q": "The black box in a plane is black.",
-            "A": False
-        },
-        "1003": {
-            "Q": "In a deck of cards, the king has a mustache.",
-            "A": False
-        },
-        "1004": {
-            "Q": "Hippos sweat a red substance.",
-            "A": True
-        },
-        "1005": {
-            "Q": "The black box in a plane is black.",
-            "A": False
-        },
-        "1006": {
-            "Q": "In a deck of cards, the king has a mustache.",
-            "A": False
-        },
-        "1007": {
-            "Q": "Hippos sweat a red substance.",
-            "A": True
-        }
-    }
-}
-
+import json
 
 def str2bool(v):
   return v.lower() in ("yes", "true", "t", "1", "y")
@@ -103,39 +10,84 @@ class Quiz:
         """Initialize the quiz"""
         global IncorrectScore
         global CorrectScore 
-        
+        global questions
+
         IncorrectScore = 0
         CorrectScore = 0
 
+        questions = Quiz.loadQuestions()
         category = Quiz.showCatalogs()
-        quizQues = Quiz.pickRandomQuestions(category)
+        if(category == 0):
+            quizQues = Quiz.pickRandomMergedQuestions()
+        else:
+            quizQues = Quiz.pickRandomQuestions(category)
         Quiz.startTest(quizQues)
         Quiz.endTest()
 
+    def loadQuestions():
+        """Loads questions from json file in a dictionary."""
+        with open('src\questions.json', 'r', encoding="utf8") as file:
+            quesDict = json.load(file)
+
+        return quesDict
+
+
     def showCatalogs():
         """Shows the availaboe categories to the user and allows them to pick one among them"""
-        global categories
         categories = list(questions.keys())
         for i in range(0, len(categories)):
             print("%d. %s"%(i+1, categories[i]))
+        print("%d. All In One"%(len(categories) + 1))
         n = int(input(("Choose a category (1-%d): "%(len(categories)))))
 
-        if n < 1 or n > len(categories)+1:
+        if n < 1 or n > len(categories)+2:
             print("Please select a valid categories in range 1 to %d.", len(categories))
             Quiz.showCatalogs()
+        elif n == len(categories) + 1:
+            return 0
         else:
-            return categories[n]
+            return categories[n-1]
+
+    def pickRandomMergedQuestions():
+        """Merges all the categories and random picks 5 questions from them."""
+        quizCategory = list(questions.keys())
+        quizQuestions = list()
+        for i in quizCategory:
+            qIds = list(questions[i].keys())
+            for j in qIds:
+                question = questions[i][j]["Q"]
+                answer = questions[i][j]["A"]
+
+                templist = list()
+                templist.append(question)
+                templist.append(answer)
+                quizQuestions.append(templist)
+        
+        pickedQues = random.sample(range(0, len(quizQuestions)), 5)
+
+        quesData = list()
+        
+        
+        for i in pickedQues:
+            question = quizQuestions[i][0]
+            answer = quizQuestions[i][1]
+
+            templst = list()
+            templst.append(question)
+            templst.append(answer)
+            quesData.append(templst)
+        
+        return quesData
 
     def pickRandomQuestions(category):
         """Picks 5 random questions from the category mentioned as first parameter."""
         ques = questions[category]
         qIds = list(ques.keys())
-        totalQues = len(qIds)
 
-        pickedQues = random.sample(range(0, totalQues), 5)
+        pickedQues = random.sample(range(0, len(qIds)), 5)
 
         quesData = list()
-        for i in range(0, len(pickedQues)):
+        for i in pickedQues:
             question = ques[qIds[i]]["Q"]
             answer = ques[qIds[i]]["A"]
 
@@ -172,11 +124,6 @@ class Quiz:
             Quiz.init()
         else:
             print("Thanks for playing our quiz game. Have a nice day!")
-
-
-
-
-            
 
 Quiz.init()
 
