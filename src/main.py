@@ -17,7 +17,10 @@ class Quiz:
 
         questions = Quiz.loadQuestions()
         category = Quiz.showCatalogs()
-        if(category == 0):
+        if category  == -1:
+            Quiz.init()
+            return
+        elif(category == 0):
             quizQues = Quiz.pickRandomMergedQuestions()
         else:
             quizQues = Quiz.pickRandomQuestions(category)
@@ -26,7 +29,7 @@ class Quiz:
 
     def loadQuestions():
         """Loads questions from json file in a dictionary."""
-        with open('src\questions.json', 'r', encoding="utf8") as file:
+        with open('src/questions.json', 'r', encoding="utf8") as file:
             quesDict = json.load(file)
 
         return quesDict
@@ -38,11 +41,11 @@ class Quiz:
         for i in range(0, len(categories)):
             print("%d. %s"%(i+1, categories[i]))
         print("%d. All In One"%(len(categories) + 1))
-        n = int(input(("Choose a category (1-%d): "%(len(categories)))))
+        n = int(input(("Choose a category (1-%d): "%((len(categories)+1)))))
 
-        if n < 1 or n > len(categories)+2:
-            print("Please select a valid categories in range 1 to %d.", len(categories))
-            Quiz.showCatalogs()
+        if n < 1 or n > len(categories)+1:
+            print("Please select a valid categories in range 1 to %d."%(len(categories)+1))
+            return -1
         elif n == len(categories) + 1:
             return 0
         else:
@@ -122,8 +125,10 @@ class Quiz:
     
         if(str2bool(replay) == True):
             Quiz.init()
+            return
         else:
             print("Thanks for playing our quiz game. Have a nice day!")
+            return
 
 Quiz.init()
 
